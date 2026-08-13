@@ -1,0 +1,38 @@
+version: "3.9"
+services:
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: utng_mosquitto
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
+
+  postgres:
+    image: postgres:16
+    container_name: utng_postgres
+    environment:
+      POSTGRES_USER: utng
+      POSTGRES_PASSWORD: utng_industrial
+      POSTGRES_DB: procesos_industriales
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: utng_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: docente@utng.edu.mx
+      PGADMIN_DEFAULT_PASSWORD: utng_industrial
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+
+volumes:
+  pgdata:
